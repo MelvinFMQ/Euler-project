@@ -19,6 +19,9 @@ def is_palindrome(number):
 #this is because to generate a larger pallindrome, future inner factor is required to be larger
 #than the recently found inner factor due to the outer factor decreasing
 #e.g x * y = product, x is decreasing. For product to increase, y must be larger.
+#reduces numbers in inner loop required to check 
+
+
 
 #when the algorithm finds a palindrom, the smaller factor will also be the lower limit for the outer loop.
 #this is because we know that numbers smaller than the smaller factor has been combined with the larger other factors,
@@ -33,8 +36,7 @@ def is_palindrome(number):
 #19 * 901 = palindrome (19 lower limit) 
 #..
 #18 * 902 = palindrome (will not be generated again, but already tested so alorithm is exhausive)
-
-
+#reduce numbers in outer loop required to check
 
 
 def largest(lower_limit):
@@ -45,14 +47,15 @@ def largest(lower_limit):
         j = 999
         while j > lower_limit:
             product = i * j
-            print(lower_limit)
             if is_palindrome(product):
                 #the latest palindrome found will have a larger lower limit.
                 print("hi")
-                if i > j:
+                if i > j and j > lower_limit:
                     lower_limit = j
-                else:
+                    print(lower_limit)
+                elif j > i  and i > lower_limit:
                     lower_limit = i
+                    print(lower_limit)
                 if product > largest:
                     largest = product
                     print(largest)
