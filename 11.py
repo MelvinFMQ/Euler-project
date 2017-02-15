@@ -28,25 +28,31 @@ s = """08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48"""
 
 def get_vertical(s, n):
-    s = s.replace("\n", "")
+    s = s.replace("\n", " ")
     s = s.split(" ")
     vertical = [[] for i in range(n)]
     for column, element in enumerate(s):
-        print(column)
         vertical[column % n].append(element)
     return vertical
 
 def get_diagonal(h,v, n):
-    no_of_diagonals = (n*2 -1)
-    diagonal = [[] * no_of_diagonals]
+    no_of_diagonals = (n*2 -1) *2
+    diagonal = [[] for i in range(no_of_diagonals) ]
     horizontal_count = n
     vertical_count = n-1
     step = 0
     for row in range(n):
         for column in range(step, n):
-            diagonal[column - step] = h[row][column]
+            diagonal[column - step].append(h[row][column])
+            diagonal[no_of_diagonals // 2 + column + row].append(h[row][column])
         step += 1
-    print(diagonal)
+    step = 1
+    for column in range(n - 1): #there is one diagonal in the middle. 
+        for row in range(step, n):
+            diagonal[row + n -  step].append(v[column][row])
+            diagonal[no_of_diagonals // 2 + column + row].append(v[column][row])
+        step += 1
+    return diagonal
         
         
 
@@ -57,16 +63,19 @@ def get_product(s):
         total *= int(letter)
     return total
 
-def traverse_right(n, s):
+def traverse_right(n, a):
     #n is the number of adjacent letters
     #s is the string
+    print(a)
+    if len(a) < n:
+        return 0, ""
     lower_pointer = 0
     upper_pointer = n
-    number_of_movement = len(s) - n
+    number_of_movement = len(a) - n
     greatest = 0
     numbers = ""
     for i in range(number_of_movement):
-        group = s[lower_pointer:upper_pointer]
+        group = a[lower_pointer:upper_pointer]
         lower_pointer += 1
         upper_pointer += 1
         product = get_product(group)
@@ -76,16 +85,23 @@ def traverse_right(n, s):
     return greatest, numbers
 
 def get_horizontal(s, n):
-    s = s.replace("\n","")
+    s = s.replace("\n"," ")
     s = s.split(' ')
     horizontal = [[] for i in range(n)] 
     for i, element in enumerate(s):
         horizontal[i // n].append(element)
     return horizontal
 
-print(get_horizontal(s, 20))
-print(get_vertical(s, 20))
-
-#product, respective_number = traverse_right(13, s)
-#print(product)
-#print(respective_number)
+h = get_horizontal(s, 20)
+v = get_vertical(s, 20)
+down_right = get_diagonal(h, v, 20)
+total = h + v + down_right
+greatest = 0
+numbers = ""
+for stream in total:
+    temp, temp_numbers = traverse_right(4, stream)
+    if temp > greatest:
+        greatest = temp
+        numbers = temp_numbers
+print(greatest)
+print(numbers)
